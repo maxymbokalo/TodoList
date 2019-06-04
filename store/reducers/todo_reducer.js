@@ -1,6 +1,4 @@
-const ADD_TODO = 'TODO/ADD';
-const UPDATE_TODO = 'TODO/UPDATE';
-const DELETE_TODO = 'TODO/DELETE';
+import {types,actions} from '../actions/todo';
 
 const initialState = { 
     todos: [],
@@ -8,29 +6,35 @@ const initialState = {
 
 export default function todo_reducer(state = initialState, action) {
   switch (action.type) {
-    case ADD_TODO:
+    case types.ADD_TODO:
       return {
         todos: [
             ...state.todos,
-            action.todo
+            action.payload
         ],
       };
-    case UPDATE_TODO:    
+    case types.UPDATE_TODO:    
         let todos = [...state.todos];
         let indexOfUpdate = todos.findIndex((todo) =>{
-            return todo.title == action.todo.title;
+            return todo.id == action.payload.id;
         });        
-        todos[indexOfUpdate] = action.todo;        
+        todos[indexOfUpdate] = action.payload;        
         return {
             ...state,
             todos: todos,
         }
-    case DELETE_TODO:
+    case types.DELETE_TODO:
         return {
             todos: state.todos.filter(function(todo) {
-                return todo.title != action.todo.title;
+                return todo.id != action.payload.id;
             })
         }
+    case types.SUCCSES_FETCH:
+        return {
+            todos: [
+                ...action.payload
+            ],
+          };
     default:
       return state;
   }
@@ -38,21 +42,21 @@ export default function todo_reducer(state = initialState, action) {
 
 export function addTodo(todo) {    
     return {
-        type: ADD_TODO,
-        todo,
+        type: types.ADD_TODO,
+        payload: todo
     };
 }
 
 export function updateTodo(todo){
     return {
-        type: UPDATE_TODO,        
-        todo,
+        type: types.UPDATE_TODO,        
+        payload: todo
     }
 }
 
 export function deleteTodo(todo){
     return {
-        type: DELETE_TODO,
-        todo,        
+        type: types.DELETE_TODO,
+        payload: todo       
     }
 }

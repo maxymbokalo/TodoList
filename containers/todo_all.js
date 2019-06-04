@@ -5,6 +5,7 @@ import AddToDoButton from '../components/add_todo_button'
 import ToDoItem from '../components/todo/todo_item/todo_item'
 import { connect } from 'react-redux'
 import { addTodo, deleteTodo, updateTodo } from '../store/reducers/todo_reducer'
+import {actions} from '../store/actions/todo'
 
 class ToDoAll extends React.Component {
   
@@ -13,6 +14,9 @@ class ToDoAll extends React.Component {
     this.state = {
         new_todo: false,
     }
+  }
+  componentWillMount(){
+    this.props.fetchTodo();
   }
 
   saveToDoData = (todo) => {
@@ -30,11 +34,11 @@ class ToDoAll extends React.Component {
     const{ screen, todos } = this.props
     if( screen == "Active"){
       return todos.filter(function(todo) {
-        return !todo.completed;
+        return !todo.isCompleted;
       })
     }else if(screen == "Completed" ){
       return todos.filter(function(todo) {
-        return todo.completed;
+        return todo.isCompleted;
       })
     }else{
       return todos
@@ -48,14 +52,14 @@ class ToDoAll extends React.Component {
     let listItm = []
     if(todos.length > 0){      
       let scrTodos = this.screenFilterTodos();
-      listItm = scrTodos.map( (todo, index) => 
-        <ToDoItem 
+      listItm = scrTodos.map( (todo, index) => {
+        return(<ToDoItem 
           key = { index } 
           todo = { todo } 
           deleteTodo = { deleteTodo } 
           updateTodo = { updateTodo }
-        />        
-      )
+        />)        
+      })
     }    
 
     return (
@@ -93,6 +97,13 @@ function mapDispatchToProps (dispatch) {
     addTodo: (todo) => dispatch(addTodo(todo)),
     deleteTodo: (todo) => dispatch(deleteTodo(todo)),
     updateTodo: (todo) => dispatch(updateTodo(todo)),
+    fetchTodo: ()=> {
+      dispatch(actions.fetch()).then(data=>{
+        dispatch(actions.succses(JSON.parse(data.value._bodyText)))
+      }).catch(error=>{
+        throw new Error(error);
+      })
+    }
   }
 }
 

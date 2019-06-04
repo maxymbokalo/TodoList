@@ -3,19 +3,20 @@ import { ListItem, Text, CheckBox, Body, Button, Icon } from 'native-base';
 
 export default class ToDoItem extends React.Component {    
   render() {      
-    const { todo, deleteTodo, updateTodo } = this.props;
+    let { todo, deleteTodo, updateTodo } = this.props;
+    // throw new Error(JSON.stringify(todo))
 
     return (
       <ListItem>        
         <CheckBox
-          checked = { todo.completed }
+          checked = { todo.isComplete }
           onPress = { () => updateTodo({
             ...todo,
-            completed: !todo.completed
+            isComplete: !todo.isComplete
           }) }
         />
         <Body>
-          <Text>{ todo.title }</Text>
+          <Text>{ todo.name }</Text>
         </Body>
         <Button
           transparent
